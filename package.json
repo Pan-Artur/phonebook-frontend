@@ -1,7 +1,7 @@
 {
-  "name": "react2-hw5",
+  "name": "react2-hw6",
   "version": "0.1.0",
-  "homepage": "https://pan-artur.github.io/react2-hw5",
+  "homepage": "https://pan-artur.github.io/react2-hw6",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.1",
