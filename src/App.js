@@ -1,8 +1,9 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addAction, deleteAction, findAction } from "./redux/slice";
-import { getContacts, getFilter } from "./redux/selectors";
+
+import { findAction } from "./redux/filterSlice";
+import { fetchContacts, addContact, deleteContact } from "./redux/slice";
+import { selectContacts, selectFilter, selectError, selectIsLoading, selectFilteredContacts } from "./redux/selectors";
 
 import PhoneEditor from "./components/PhoneEditor/PhoneEditor";
 import PhoneList from "./components/PhoneList/PhoneList";
@@ -13,9 +14,17 @@ const App = () => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
 
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(getFilter);
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectFilter);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
+  const filteredContacts = useSelector(selectFilteredContacts);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   const handleInputChange = (field, value) => {
     if (field === "name") {
@@ -25,7 +34,7 @@ const App = () => {
     }
   };
 
-  const addContact = (name, number) => {
+  const handleAddContact = (name, number) => {
     if (!name || !number || name.trim() === "" || number.trim() === "") {
       return;
     }
@@ -39,7 +48,7 @@ const App = () => {
       return;
     }
 
-    dispatch(addAction({ name: name.trim(), number: number.trim() }));
+    dispatch(addContact({ name: name.trim(), number: number.trim() }));
     setName("");
     setNumber("");
   };
@@ -48,21 +57,16 @@ const App = () => {
     dispatch(findAction(e.target.value));
   };
 
-  const deleteContact = (id) => {
-    dispatch(deleteAction(id));
+  const handleDeleteContact = (id) => {
+    dispatch(deleteContact(id));
   };
-
-  const filteredContacts = contacts.filter(
-    (contact) =>
-      contact.name && contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
 
   return (
     <div className="App">
       <h1>Phonebook</h1>
       <div>
-        <PhoneEditor onChange={handleInputChange} name={name} number={number} onAddContact={addContact} />
-        <PhoneList contacts={filteredContacts} filter={filter} onFilterChange={handleFilterChange} onDelete={deleteContact} />
+        <PhoneEditor onChange={handleInputChange} name={name} number={number} onAddContact={handleAddContact} />
+        <PhoneList contacts={filteredContacts} filter={filter} onFilterChange={handleFilterChange} onDelete={handleDeleteContact} />
       </div>
     </div>
   );
