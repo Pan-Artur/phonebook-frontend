@@ -1,74 +1,38 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectIsLoggedIn } from "./redux/authSelectors";
 
-import { findAction } from "./redux/filterSlice";
-import { fetchContacts, addContact, deleteContact } from "./redux/slice";
-import { selectContacts, selectFilter, selectError, selectIsLoading, selectFilteredContacts } from "./redux/selectors";
-
-import PhoneEditor from "./components/PhoneEditor/PhoneEditor";
-import PhoneList from "./components/PhoneList/PhoneList";
-
-import "./App.css";
+import Layout from "./components/Layout/Layout";
+import RegisterPage from "./pages/RegisterPage/RegisterPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import ContactsPage from "./pages/ContactsPage/ContactsPage";
 
 const App = () => {
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
-
-  const contacts = useSelector(selectContacts);
-  const filter = useSelector(selectFilter);
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
-  const filteredContacts = useSelector(selectFilteredContacts);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
-
-  const handleInputChange = (field, value) => {
-    if (field === "name") {
-      setName(value);
-    } else if (field === "number") {
-      setNumber(value);
-    }
-  };
-
-  const handleAddContact = (name, number) => {
-    if (!name || !number || name.trim() === "" || number.trim() === "") {
-      return;
-    }
-
-    const isNameExists = contacts.some(
-      (contact) => contact.name.toLowerCase() === name.trim().toLowerCase()
-    );
-
-    if (isNameExists) {
-      alert(`${name} вже є в телефонній книзі!`);
-      return;
-    }
-
-    dispatch(addContact({ name: name.trim(), number: number.trim() }));
-    setName("");
-    setNumber("");
-  };
-
-  const handleFilterChange = (e) => {
-    dispatch(findAction(e.target.value));
-  };
-
-  const handleDeleteContact = (id) => {
-    dispatch(deleteContact(id));
-  };
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   return (
-    <div className="App">
-      <h1>Phonebook</h1>
-      <div>
-        <PhoneEditor onChange={handleInputChange} name={name} number={number} onAddContact={handleAddContact} />
-        <PhoneList contacts={filteredContacts} filter={filter} onFilterChange={handleFilterChange} onDelete={handleDeleteContact} />
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route
+          index
+          element={
+            isLoggedIn ? <Navigate to="/contacts" /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="register"
+          element={!isLoggedIn ? <RegisterPage /> : <Navigate to="/contacts" />}
+        />
+        <Route
+          path="login"
+          element={!isLoggedIn ? <LoginPage /> : <Navigate to="/contacts" />}
+        />
+        <Route
+          path="contacts"
+          element={isLoggedIn ? <ContactsPage /> : <Navigate to="/login" />}
+        />
+      </Route>
+    </Routes>
   );
 };
 

@@ -1,13 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const url = "https://683742e1664e72d28e4422e4.mockapi.io/contacts";
+const BASE_URL = "http://localhost:3001";
 
 export const fetchContacts = createAsyncThunk(
   "contacts/fetchAll",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(url);
+      const state = thunkAPI.getState();
+      const token = state.auth.token;
+
+      const response = await axios.get(`${BASE_URL}/contacts`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       return response.data;
     } catch (error) {
@@ -22,7 +27,12 @@ export const addContact = createAsyncThunk(
   "contacts/addContact",
   async (contact, thunkAPI) => {
     try {
-      const response = await axios.post(url, contact);
+      const state = thunkAPI.getState();
+      const token = state.auth.token;
+
+      const response = await axios.post(`${BASE_URL}/contacts`, contact, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
       return response.data;
     } catch (error) {
@@ -37,7 +47,12 @@ export const deleteContact = createAsyncThunk(
   "contacts/deleteContact",
   async (contactId, thunkAPI) => {
     try {
-      await axios.delete(`${url}/${contactId}`);
+      const state = thunkAPI.getState();
+      const token = state.auth.token;
+
+      await axios.delete(`${BASE_URL}/contacts/${contactId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
       return contactId;
     } catch (error) {
