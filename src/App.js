@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { loadFromLocalStorage } from "./redux/authSlice";
 import { selectIsLoggedIn } from "./redux/authSelectors";
 
 import Layout from "./components/Layout/Layout";
@@ -8,7 +10,13 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import ContactsPage from "./pages/ContactsPage/ContactsPage";
 
 const App = () => {
+  const dispatch = useDispatch();
+
   const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  useEffect(() => {
+    dispatch(loadFromLocalStorage());
+  }, [dispatch]);
 
   return (
     <div className="App">

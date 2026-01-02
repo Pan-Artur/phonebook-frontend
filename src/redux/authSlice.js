@@ -55,28 +55,6 @@ export const logout = createAsyncThunk(
   }
 );
 
-export const fetchCurrentUser = createAsyncThunk(
-  "auth/refresh",
-  async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const token = state.auth.token;
-
-    if (!token) {
-      return thunkAPI.rejectWithValue("No token!");
-    }
-
-    try {
-      const response = await axios.get(`${BASE_URL}/users/current`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
 const initialState = {
   user: { name: null, email: null },
   token: null,
@@ -88,6 +66,21 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
+  reducers: {
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
+    loadFromLocalStorage: (state) => {
+      const token = localStorage.getItem("token");
+      const userStr = localStorage.getItem("user");
+
+      if (token && userStr) {
+        state.token = token;
+        state.user = JSON.parse(userStr);
+        state.isLoggedIn = true;
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(register.fulfilled, (state, action) => {
@@ -95,6 +88,9 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.isLoggedIn = true;
         state.error = null;
+
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(register.rejected, (state, action) => {
         state.error = action.payload;
@@ -104,6 +100,9 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.isLoggedIn = true;
         state.error = null;
+
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(login.rejected, (state, action) => {
         state.error = action.payload;
@@ -113,20 +112,12 @@ const authSlice = createSlice({
         state.token = null;
         state.isLoggedIn = false;
         state.error = null;
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
       })
-      .addCase(fetchCurrentUser.pending, (state) => {
-        state.isRefreshing = true;
-      })
-      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.isLoggedIn = true;
-        state.isRefreshing = false;
-        state.error = null;
-      })
-      .addCase(fetchCurrentUser.rejected, (state) => {
-        state.isRefreshing = false;
-      });
   },
 });
 
+export const { setToken, loadFromLocalStorage } = authSlice.actions;
 export default authSlice.reducer; 
