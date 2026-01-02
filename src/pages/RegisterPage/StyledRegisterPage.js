@@ -1,8 +1,12 @@
 import styled from "styled-components";
 
 export const StyledRegisterPage = styled.div`
-  max-width: 400px;
-  margin: 40px auto 50px;
+  width: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 45px;
   padding: 30px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f5f5f5;
