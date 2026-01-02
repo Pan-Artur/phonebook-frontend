@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = "https://phonebook-backend-w9f3.onrender.com";
 
 export const register = createAsyncThunk(
   "auth/register",
