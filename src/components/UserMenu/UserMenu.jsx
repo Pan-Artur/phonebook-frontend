@@ -1,13 +1,13 @@
+import { StyledUserMenu } from "./StyledUserMenu";
+
 const UserMenu = ({ userEmail, onLogout }) => {
   return (
-    <div>
-      <div>
-        <span>{userEmail || "User"}</span>
-      </div>
+    <StyledUserMenu>
+      <span>{userEmail || "User"}</span>
       <button type="button" onClick={onLogout}>
         Logout
       </button>
-    </div>
+    </StyledUserMenu>
   );
 };
 

@@ -11,28 +11,50 @@ const App = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route
-          index
-          element={
-            isLoggedIn ? <Navigate to="/contacts" /> : <Navigate to="/login" />
-          }
-        />
-        <Route
-          path="register"
-          element={!isLoggedIn ? <RegisterPage /> : <Navigate to="/contacts" />}
-        />
-        <Route
-          path="login"
-          element={!isLoggedIn ? <LoginPage /> : <Navigate to="/contacts" />}
-        />
-        <Route
-          path="contacts"
-          element={isLoggedIn ? <ContactsPage /> : <Navigate to="/login" />}
-        />
-      </Route>
-    </Routes>
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route
+            index
+            element={
+              isLoggedIn ? (
+                <Navigate to="/contacts" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="register"
+            element={
+              !isLoggedIn ? <RegisterPage /> : <Navigate to="/contacts" />
+            }
+          />
+          <Route
+            path="login"
+            element={!isLoggedIn ? <LoginPage /> : <Navigate to="/contacts" />}
+          />
+          <Route
+            path="contacts"
+            element={isLoggedIn ? <ContactsPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="*"
+            element={
+              <div className="error-page">
+                <h1>404</h1>
+                <p>Сторінку не знайдено</p>
+                {isLoggedIn ? (
+                  <a href="/contacts">Перейти до контактів</a>
+                ) : (
+                  <a href="/login">Увійти в систему</a>
+                )}
+              </div>
+            }
+          />
+        </Route>
+      </Routes>
+    </div>
   );
 };
 

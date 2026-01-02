@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../redux/authSlice";
 import { selectAuthError, selectIsLoggedIn } from "../../redux/authSelectors";
+import { StyledLoginPage } from "./StyledLoginPage";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -36,7 +37,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
+    <StyledLoginPage>
       <h2>Login</h2>
       {authError && <div>{authError}</div>}
       <form onSubmit={handleSubmit}>
@@ -68,7 +69,7 @@ const LoginPage = () => {
         Don't have an account?{" "}
         <Link to="/register">Register here</Link>
       </p>
-    </div>
+    </StyledLoginPage>
   );
 };
 

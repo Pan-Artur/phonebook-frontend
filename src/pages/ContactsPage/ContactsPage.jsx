@@ -20,6 +20,8 @@ import PhoneEditor from "../../components/PhoneEditor/PhoneEditor";
 import PhoneList from "../../components/PhoneList/PhoneList";
 import UserMenu from "../../components/UserMenu/UserMenu";
 
+import { StyledContactsPage } from "./StyledContactsPage";
+
 const ContactsPage = () => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
@@ -86,38 +88,38 @@ const ContactsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="App">
-        <div>
+      <StyledContactsPage>
+        <div className="header">
           <h1>Phonebook</h1>
           <UserMenu userEmail={user?.email} onLogout={handleLogout} />
         </div>
-        <div>Loading contacts...</div>
-      </div>
+        <div className="loading">Loading contacts...</div>
+      </StyledContactsPage>
     );
   }
 
   if (error) {
     return (
-      <div className="App">
-        <div>
+      <StyledContactsPage>
+        <div className="header">
           <h1>Phonebook</h1>
           <UserMenu userEmail={user?.email} onLogout={handleLogout} />
-          <div>
-            Error: {error}
-            <button onClick={() => dispatch(fetchContacts())}>Retry</button>
-          </div>
         </div>
-      </div>
+        <div className="error">
+          Error: {error}
+          <button onClick={() => dispatch(fetchContacts())}>Retry</button>
+        </div>
+      </StyledContactsPage>
     );
   }
 
   return (
-    <div className="App">
-      <div>
+    <StyledContactsPage>
+      <div className="header">
         <h1>Phonebook</h1>
         <UserMenu userEmail={user?.email} onLogout={handleLogout} />
       </div>
-      <div>
+      <div className="content">
         <PhoneEditor
           onChange={handleInputChange}
           name={name}
@@ -131,7 +133,7 @@ const ContactsPage = () => {
           onDelete={handleDeleteContact}
         />
       </div>
-    </div>
+    </StyledContactsPage>
   );
 };
 

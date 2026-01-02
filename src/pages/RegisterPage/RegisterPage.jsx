@@ -4,6 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { register } from "../../redux/authSlice";
 import { selectAuthError, selectIsLoggedIn } from "../../redux/authSelectors";
 
+import { StyledRegisterPage } from "./StyledRegisterPage.js";
+
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -78,17 +80,15 @@ const RegisterPage = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-
       return;
     }
 
     dispatch(register({ name: name.trim(), email: email.trim(), password }));
-
     setErrors({});
   };
 
   return (
-    <div>
+    <StyledRegisterPage>
       <h2>Create account</h2>
       {authError && <div>{authError}</div>}
       <form onSubmit={handleSubmit}>
@@ -106,6 +106,7 @@ const RegisterPage = () => {
           <label htmlFor="email">Email:</label>
           <input
             type="email"
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -134,10 +135,9 @@ const RegisterPage = () => {
         <button type="submit">Register</button>
       </form>
       <p>
-        Already have an account?{" "}
-        <Link to="/login">Login here</Link>
+        Already have an account? <Link to="/login">Login here</Link>
       </p>
-    </div>
+    </StyledRegisterPage>
   );
 };
 
